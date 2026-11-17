@@ -23,8 +23,14 @@ class Controller:
         if self.mese_selezionato == 0:
             self._view.show_alert("Selezionare un Mese!")
         else:
-            prezzo_medio = self._model.get_prezzo_medio(self.mese_selezionato)
             self._view.lista_visualizzazione.controls.clear()
+            try:
+                prezzo_medio = self._model.get_prezzo_medio(self.mese_selezionato)
+            except Exception as errore:
+                self._view.show_alert(f"Errore durante il calcolo della media: {errore}")
+                self._view.update()
+                return
+
             self._view.lista_visualizzazione.controls.append(
                 ft.Text(f"Il prezzo medio nel mese selezionato è:")
             )
@@ -33,13 +39,21 @@ class Controller:
                     self._view.lista_visualizzazione.controls.append(
                         ft.Text(f"{distributore_media[0]}: {distributore_media[1]:.3f} €/litro")
                     )
+            self._view.update()
 
     def calcola_sequenza(self, e):
         if self.mese_selezionato == 0:
             self._view.show_alert("Selezionare un Mese!")
         else:
-            sequenza_ottima, costo = self._model.get_sequenza_ottima(self.mese_selezionato)
             self._view.lista_visualizzazione.controls.clear()
+            try:
+                sequenza_ottima, costo = self._model.get_sequenza_ottima(self.mese_selezionato)
+            except Exception as errore:
+                self._view.show_alert(f"Errore durante il calcolo della sequenza: {errore}")
+                self._view.update()
+                return
+
             self._view.lista_visualizzazione.controls.append(ft.Text(f"La sequenza ottima ha costo {costo:.2f}€ ed è:"))
             for stop in sequenza_ottima:
                 self._view.lista_visualizzazione.controls.append(ft.Text(stop))
+            self._view.update()
